@@ -69,11 +69,11 @@ void remove_avl(node **first)
 {
 	if(*first != NULL)
 	{
-		//remove_avl(&(*first)->left);
-		//remove_avl(&(*first)->right);
-		//remove_avl(&(*first)->avl);
-		//free(*first);
-		//*first = NULL;
+		remove_avl(&(*first)->left);
+		remove_avl(&(*first)->right);
+		remove_avl(&(*first)->avl);
+		free(*first);
+		*first = NULL;
 	}
 }
 
