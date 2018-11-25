@@ -1,63 +1,65 @@
 #include <stdio.h>
 #include <stdlib.h>
-typedef struct AVL
-{
-    unsigned long endereco;// < < -- Chama endereco na memoria(fseek(base,endereco*1024,SEEK_SET));
-    unsigned long chave;
-    struct AVL *esq;
-    struct AVL *dir;
-}AVL;
-typedef struct memoria
-{
-    unsigned long endereco; // < < -- Endereco em HEXA
-    unsigned long chave;
-    unsigned char outros[1008];
-}memoria;
+#include<sys/time.h>
+#include "avlpf.h"
 
-void buscaAVL(AVL **prim,FILE *base)
-{
-    /*
-    BLIBLIOTECA BUSCA
-    */
-    memoria *arquivo=(memoria *)malloc(sizeof(memoria));
-    unsigned char buffer[1024];
-    fseek(base,((*prim)->endereco)*1024,SEEK_SET);
-    fread(buffer,sizeof(buffer),1,base);
-    memcpy((&*arquivo)->endereco),buffer,8);
-    memcpy(&(*arquivo)->chave),buffer+8,8);
-    memcpy(&(*arquivo)->outros),buffer+16,1008);
-    printf("O arquivo %lu",(*arquivo)->endereco);
-    printf("%lu",(*arquivo)->chave);
-    printf("%s",(*arquivo)->outros);
-}
+int main(){
+	FILE *archive = fopen("base.bin","rb");
+	
+	if(archive != NULL)
+	{
+		node *first = NULL;
+		record *buffer = (record*) malloc(4*sizeof(record));
+		
+		fseek(archive,0,SEEK_SET);
+		int i = 0, j = 0;
+		while(!feof(archive))
+		{
+			fread(buffer,4096,1,archive);
+                        
+			for(int k = 0 ; k < 4 ; k++)
+			{
+				insert_node(&first, (buffer+k)->key, (buffer+k)->not_key, j);
+				//printf("chave: %lu | não chave: %lu\n", (buffer+k)->key, (buffer+k)->not_key); 
+                        }
+			j++;
+		}
 
-
-void insereAVL(unsigned char **buffer, AVL **prim,int i)
-{
-    /*
-    BLIBLIOTECA INSERE AVL
-    */
-    *prim=(avl*)malloc(sizeof(AVL));
-    memcpy(&(*prim)->endereco,buffer,8);
-    memcpy(&(*prim)->chave,buffer+8,8);
-    (*prim)->esq=NULL;
-    (*prim)->dir=dir;
-}
+		free(buffer);
+		buffer = NULL;
+		
+		int option;
+		unsigned long int key;
+		record *buffer_2 = (record*) malloc(4*sizeof(record));
+		do{
+			printf("What value do you wanna search?\n");
+			scanf("%lu",&key);
+			
+			double ti,tf,time;
+			struct timeval tempo_inicio, tempo_fim;
+			ti = tf = time = 0;
+			gettimeofday(&tempo_inicio,NULL);
 
 
+			node *aux = search(first,key);		
+			if(aux != NULL) acess_hardrive(aux,buffer_2,archive,key);
+			else printf("The value wasn't found on HarDrive!\n");
+			
+			printf("||SEARCH RESULTS||\n");
 
-int main()
-{
-    FILE *base = fopen("base.bin", "rb");
-    unsigned char buffer[1024];
-    int i;
-    AVL *raiz=NULL;
-    while(getc(base)!=EOF)
-    {
-    fseek(base,i*1024,SEEK_SET);
-    fread(buffer,sizeof(buffer),1,base);
-    insereAVL(&buffer,&prim,i);
-    i++;
-    }
-    printf("%d",i);
+			gettimeofday(&tempo_fim,NULL);
+			tf = (double) tempo_fim.tv_usec + ((double) tempo_fim.tv_sec * (1000000.0));			
+			ti = (double) tempo_inicio.tv_usec + ((double) tempo_inicio.tv_sec * (1000000.0));
+			time = (tf - ti)/1000;
+
+			printf("\nThe execution Time was %f.\n\n", time);
+
+			printf("Do you wanna do another search?\n||<YES> - 1 | <NO> - 0||\n");
+			scanf("%d", &option);			
+			system("clear");
+		}while(option != 0);
+		
+		remove_avl(&first);
+		fclose(archive);
+	}else printf("The file couldn't be opened!\n");
 }
