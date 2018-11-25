@@ -1,13 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
-
-typedef struct Node{
-	unsigned long key;
-	int height;
-	struct Node *left;
-	struct Node *right;
-	struct Node *avl;
-}node;
+#include"avlpf.h"
 
 int flag = 0;
 
@@ -16,10 +9,26 @@ void print_tree(node *first)
 	if(first != NULL)
 	{
 		print_tree(first->left);
-		printf("%lu (%d) - ", first->key,first->height);
+		printf("%lu\n", first->key);
 		print_tree(first->right);		
 	} 
+}
 
+void acess_hardrive(node *first, record *buffer, FILE *archive, int key)
+{
+	if(first != NULL)
+	{
+		print_tree(first->left);
+	  
+		fseek(archive,(first)->adress*4096,SEEK_SET);
+		fread(buffer,4096,1,archive);
+		for(int k = 0 ; k < 4 ; k++)
+		{
+			if((buffer+k)->not_key == key)
+				printf("Key: %lu | Not Key: %lu\n", (buffer+k)->key, (buffer+k)->not_key); 
+                }	
+		print_tree(first->right);	
+	} 
 }
 
 node *search(node *first, unsigned long int x)
@@ -56,7 +65,19 @@ void rot_left(node **first)
 	*first = aux;
 }
 
-int insert_node(node **first, unsigned long key, unsigned long not_key)
+void remove_avl(node **first)
+{
+	if(*first != NULL)
+	{
+		//remove_avl(&(*first)->left);
+		//remove_avl(&(*first)->right);
+		//remove_avl(&(*first)->avl);
+		//free(*first);
+		//*first = NULL;
+	}
+}
+
+int insert_node(node **first, unsigned long key, unsigned long not_key, int adress)
 {
 	if(*first == NULL)
 	{
@@ -67,24 +88,26 @@ int insert_node(node **first, unsigned long key, unsigned long not_key)
 		(*first)->left = NULL;
 		(*first)->avl = NULL;
 		(*first)->height = 0;
-		//(*first)->key = key;
 		(*first)->key = not_key;
 
-		if(flag != 1) insert_node(&(*first), key, not_key);
+		if(flag == 1) (*first)->adress = adress;
+		else (*first)->adress = -1;
+
+		if(flag != 1) insert_node(&(*first), key, not_key, adress);
 		return 1;
 	}
 	else
 	if(not_key == (*first)->key)
 	{
 		flag = 1;
-		insert_node(&(*first)->avl, not_key, key);
+		insert_node(&(*first)->avl, not_key, key, adress);
 		//printf("key: %lu | fb: %d.\n\n",(*first)->key,(*first)->height);
 		flag = 0;
 		return 0;
 	}
 	else if(not_key < (*first)->key)
 	{
-		int a = insert_node(&(*first)->left, key, not_key);
+		int a = insert_node(&(*first)->left, key, not_key, adress);
 		//printf("no: %d | fb: %d | fb¹: %d\n\n",(*first)->key,(*first)->height,a);
 		if(a == 1)
 		{
@@ -124,7 +147,7 @@ int insert_node(node **first, unsigned long key, unsigned long not_key)
 	}
 	else
 	{		
-		int b = insert_node(&(*first)->right, key, not_key);
+		int b = insert_node(&(*first)->right, key, not_key, adress);
 		//printf("no: %d | fb: %d | fb¹: %d\n\n",(*first)->key,(*first)->height,b);			
 		if(b == 1)
 		{
@@ -162,27 +185,4 @@ int insert_node(node **first, unsigned long key, unsigned long not_key)
 			}
 		}else return 0;
 	}
-}
-void main()
-{
-	node *first = NULL, *aux = NULL;
-	
-	insert_node(&first,50,1);
-	insert_node(&first,60,2);
-	insert_node(&first,40,3);
-	insert_node(&first,65,4);
-	insert_node(&first,55,4);
-	insert_node(&first,54,4);
-	insert_node(&first,63,6);
-	insert_node(&first,62,7);
-	insert_node(&first,1,8);
-	insert_node(&first,4,9);
-	insert_node(&first,56,11);
-	insert_node(&first,51,11);
-	insert_node(&first,57,11);
-	
-	//print_tree(first);
-	
-	aux = search(first,4);
-	print_tree(aux);		
 }
