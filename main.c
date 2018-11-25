@@ -52,7 +52,7 @@ int main(){
 			ti = (double) tempo_inicio.tv_usec + ((double) tempo_inicio.tv_sec * (1000000.0));
 			time = (tf - ti)/1000;
 
-			printf("\nThe execution Time was %f.\n\n", time);
+			printf("\nThe execution Time was %f milliseconds.\n\n", time);
 
 			printf("Do you wanna do another search?\n||<YES> - 1 | <NO> - 0||\n");
 			scanf("%d", &option);			
