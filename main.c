@@ -77,7 +77,7 @@ int main()
 		}
 		else
 		{
-			printf("Sorry!\nIn the moment our algorithm only work on Primary Memory.\nTry again in a few months.\n");
+			printf("Sorry!\nIn the moment our algorithm work only on Primary Memory.\nTry again in a few months.\n");
 		}
 	}else printf("The file couldn't be opened!\n");
 }
