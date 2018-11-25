@@ -70,94 +70,123 @@ int insert_node(no **first, int key)
 		else if(key < (*first)->key)
 		{
 			int a = insert_node(&(*first)->left, key);
-			(*first)->alt += a;
+			//printf("no: %d | fb: %d | fb¹: %d\n\n",(*first)->key,(*first)->alt,a);
+			if(a == 1)
+			{
+			(*first)->alt -= a;
+			if((*first)->alt == -1) return 1;
 			if((*first)->alt == 0) return 0;
 			else
 			{
-				if((*first)->alt > 1)
+				if((*first)->alt < 1)
 				{
 					if((*first)->alt * (*first)->left->alt < 0)
 					{
 						rot_left(&(*first)->left);
 						rot_right(first);
-						//Arrumar o FB
+						if((*first)->alt == -1)
+						{
+							(*first)->left->alt = 0;
+							(*first)->left->alt = 1;
+						}
+						else
+						{
+							(*first)->right->alt = 0;
+							(*first)->left->alt = -(*first)->alt;
+                        			}
+                        			(*first)->alt = 0;
 					}
 					else
 					{
-						(*first)->alt = 0;
 						rot_right(first);
+						(*first)->right->alt = 0;
 						(*first)->alt = 0;
 					}
-					//return;
+					return 0;
 				}
-				return a;
 			}
+		}else return 0;
 		}
 		else
-		{
+		{		
 			int b = insert_node(&(*first)->right, key);
-			(*first)->alt -= b;
+			//printf("no: %d | fb: %d | fb¹: %d\n\n",(*first)->key,(*first)->alt,b);			
+			if(b == 1)
+			{
+			(*first)->alt += b;
+			if((*first)->alt == 1) return 1;
 			if((*first)->alt == 0) return 0;
 			else
 			{
-				if((*first)->alt < 1)
+				if((*first)->alt > 1)
 				{	
 					if((*first)->alt * (*first)->right->alt < 0)
 					{
 						rot_right(&(*first)->right);
 						rot_left(first);
-						//Arrumar o FB
+						if((*first)->alt == -1)
+						{
+							(*first)->left->alt = 0;
+							(*first)->right->alt = 1;
+						}
+						else
+						{
+							(*first)->right->alt = 0;
+							(*first)->left->alt = -(*first)->alt;
+						}
+						(*first)->alt = 0;
 					}
 					else
 					{
-						(*first)->alt = 0;
 						rot_left(first);
+						(*first)->left->alt = 0;
 						(*first)->alt = 0;
-					}//return 0;
+					}
+					return 0;
 				}
-				return b;
 			}
-		}
-	
+		}else return 0;
+	}
 }
 void main()
 {
-	no *raiz = NULL;
+	no *first = NULL;
 	
-	insert_node(&raiz,50);
-	insert_node(&raiz,60);
-	insert_node(&raiz,40);
-	insert_node(&raiz,65);
-	insert_node(&raiz,55);
-	insert_node(&raiz,70);
-	insert_node(&raiz,63);
-	insert_node(&raiz,62);
-	/*insert_node(&raiz,1);
-	insert_node(&raiz,4);
-	*/
+	insert_node(&first,50);
+	insert_node(&first,60);
+	insert_node(&first,40);
+	insert_node(&first,65);
+	insert_node(&first,55);
+	insert_node(&first,70);
+	insert_node(&first,63);
+	insert_node(&first,62);
+	insert_node(&first,1);
+	insert_node(&first,4);
+	insert_node(&first,56);
+	insert_node(&first,51);
+	insert_node(&first,57);
+	print_tree(first);
 	
-	print_tree(raiz);
+	/*insert_node(&first,-4);
+	insert_node(&first,-5);
+	insert_node(&first,6);
+	insert_node(&first,5);
 	
-	/*insert_node(&raiz,-4);
-	insert_node(&raiz,-5);
-	insert_node(&raiz,6);
-	insert_node(&raiz,5);
-	
-	printf("%d\n",raiz->left->left->left->alt);
-	printf("%d\n",raiz->left->left->alt);
-	printf("%d\n",raiz->left->alt);
-	printf("%d\n",raiz->alt);
-	printf("%d\n",raiz->right->alt);
-	printf("%d\n",raiz->right->right->alt);
-	printf("%d\n",raiz->right->left->alt);
+	printf("%d\n",first->left->left->left->alt);
+	printf("%d\n",first->left->left->alt);
+	printf("%d\n",first->left->alt);
+	printf("%d\n",first->alt);
+	printf("%d\n",first->right->alt);
+	printf("%d\n",first->right->right->alt);
+	printf("%d\n",first->right->left->alt);
 	*/
 	/*
 	
-	insert_node(&raiz,-2);
-	insert_node(&raiz,10);
-	insert_node(&raiz,27);
-	insert_node(&raiz,7);
-	insert_node(&raiz,26);
-	insert_node(&raiz,8);
+	insert_node(&first,-2);
+	insert_node(&first,10);
+	insert_node(&first,27);
+	insert_node(&first,7);
+	insert_node(&first,26);
+	insert_node(&first,8);
 	*/	
 }
