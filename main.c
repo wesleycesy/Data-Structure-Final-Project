@@ -11,7 +11,7 @@ int main()
 	{
 		char option;
 		printf("Do you wanna put data on memory?\n||<YES> - y | <NO> - n||\n");
-		scanf("%c", &option);
+		scanf("%c%*c", &option);
 		
 		if(option == 'y')
 		{
@@ -53,10 +53,13 @@ int main()
 			
 			
 						node *aux = search(first,key);		
-						if(aux != NULL) acess_hardrive(aux,buffer_2,archive,key);
-						else printf("The value wasn't found on HarDrive!\n");
+						if(aux != NULL)
+						{
+							printf("||SEARCH RESULTS||\n");
+							acess_hardrive(aux,buffer_2,archive,key);
+						}else printf("The value wasn't found on HarDrive!\n");
 					
-						printf("||SEARCH RESULTS||\n");
+						
 						
 						gettimeofday(&tempo_fim,NULL);
 						tf = (double) tempo_fim.tv_usec + ((double) tempo_fim.tv_sec * 	(1000000.0));			
@@ -66,9 +69,9 @@ int main()
 						printf("\nThe execution Time was %f milliseconds.\n\n", time);
 			
 						printf("Do you wanna do another search?\n||<YES> - y | <NO> - n||\n");
-						scanf("%c", &option);			
+						scanf("%c%*c", &option);			
 						system("clear");
-					}while(option != 0);
+					}while(option != 'n');
 					
 					remove_avl(&first);
 					free(buffer_2);
