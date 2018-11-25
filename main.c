@@ -71,6 +71,7 @@ int main()
 					}while(option != 0);
 					
 					remove_avl(&first);
+					free(buffer);
 					fclose(archive);
 				}
 			}
