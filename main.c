@@ -15,7 +15,7 @@ int main()
 		setbuf(stdin,NULL);		
 		scanf("%c%*c", &option);
 		
-		if(option == 'a')
+		if(option == 'a' || option == 'A')
 		{
 			node *first = NULL;
 			record *buffer = (record*) malloc(4*sizeof(record));
@@ -74,24 +74,24 @@ int main()
 						setbuf(stdin,NULL);						
 						scanf("%c", &option);			
 						system("clear");
-					}while(option == 'y');
+					}while(option == 'y' || option == 'Y');
 					remove_avl(&first);
 					free(buffer_2);
 					fclose(archive);
 				}
 			}
 		}
-		else if(option == 'b')
+		else if(option == 'b' || option == 'B')
 		{
 			printf("Sorry!\nIn the moment our algorithm work only AVL.\nTry again in a few days.\n");
 			getchar();		
 		}
-		else if(option != 'e')
+		else if(option != 'e' && option != 'E')
 		{
 			printf("Invalid Option!\n");
 			getchar();		
 		}
-		}while(option != 'e');
+		}while(option != 'e' && option != 'E');
 	}else printf("The file couldn't be opened!\n");
 	printf("Thankyou for using our app. See you soon!\n");
 }
