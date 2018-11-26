@@ -5,13 +5,14 @@
 
 int main()
 {
-	system("clear");
 	FILE *archive = fopen("base.bin","rb");
 	if(archive != NULL)
 	{
 		char option;
-		
-		printf("In which data structure do you want to save the Hard Disk data?\n||<AVL> - a | <B> - b||\n");
+		do{
+		system("clear");
+		printf("In which data structure do you want to save the Hard Disk data?\n|| <AVL> - a | <B> - b | <EXIT> - e ||\n");
+		setbuf(stdin,NULL);		
 		scanf("%c%*c", &option);
 		
 		if(option == 'a')
@@ -58,7 +59,7 @@ int main()
 						{
 							printf("||SEARCH RESULTS||\n");
 							acess_hardrive(aux,buffer_2,archive,key);
-						}else printf("The value wasn't found on HarDrive!\n");
+						}else printf("The value wasn't found on Hard Disk!\n");
 					
 						
 						
@@ -69,21 +70,28 @@ int main()
 			
 						printf("\nThe execution Time was %f milliseconds.\n\n", time);
 			
-						printf("Do you wanna do another search?\n||<YES> - y | <NO> - n||\n");
+						printf("Do you wanna do another search?\n|| <YES> - y | <NO> - n ||\n");
 						setbuf(stdin,NULL);						
 						scanf("%c", &option);			
 						system("clear");
 					}while(option == 'y');
-					printf("Thankyou for using our app. See you soon!\n");
 					remove_avl(&first);
 					free(buffer_2);
 					fclose(archive);
 				}
 			}
 		}
-		if(option == 'b')
+		else if(option == 'b')
 		{
 			printf("Sorry!\nIn the moment our algorithm work only AVL.\nTry again in a few days.\n");
+			getchar();		
 		}
+		else if(option != 'e')
+		{
+			printf("Invalid Option!\n");
+			getchar();		
+		}
+		}while(option != 'e');
 	}else printf("The file couldn't be opened!\n");
+	printf("Thankyou for using our app. See you soon!\n");
 }
