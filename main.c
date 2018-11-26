@@ -10,10 +10,11 @@ int main()
 	if(archive != NULL)
 	{
 		char option;
-		printf("Do you wanna put data on memory?\n||<YES> - y | <NO> - n||\n");
+		
+		printf("In which data structure do you want to save the Hard Disk data?\n||<AVL> - a | <B> - b||\n");
 		scanf("%c%*c", &option);
 		
-		if(option == 'y')
+		if(option == 'a')
 		{
 			node *first = NULL;
 			record *buffer = (record*) malloc(4*sizeof(record));
@@ -80,9 +81,9 @@ int main()
 				}
 			}
 		}
-		else
+		if(option == 'b')
 		{
-			printf("Sorry!\nIn the moment our algorithm work only on Primary Memory.\nTry again in a few months.\n");
+			printf("Sorry!\nIn the moment our algorithm work only AVL.\nTry again in a few days.\n");
 		}
 	}else printf("The file couldn't be opened!\n");
 }
