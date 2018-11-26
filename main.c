@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include<sys/time.h>
+#include <sys/time.h>
 #include "avl.h"
 
 int main()
@@ -69,10 +69,11 @@ int main()
 						printf("\nThe execution Time was %f milliseconds.\n\n", time);
 			
 						printf("Do you wanna do another search?\n||<YES> - y | <NO> - n||\n");
-						scanf("%c%*c", &option);			
+						setbuf(stdin,NULL);						
+						scanf("%c", &option);			
 						system("clear");
-					}while(option != 'n');
-					
+					}while(option == 'y');
+					printf("Thankyou for using our app. See you soon!\n");
 					remove_avl(&first);
 					free(buffer_2);
 					fclose(archive);
