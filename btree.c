@@ -22,6 +22,15 @@ Node *createNewNode(){
 }
 
 
+Node *split(Node **btree, int key, int not_key){
+	Node *left = createNewNode();
+	Node *right = createNewNode();
+	if
+	
+	
+}
+
+
 int btreeInsert(Node **btree, int key, int not_key){
     if(*btree == NULL){//new tree, just insert
         *btree = createNewNode();
