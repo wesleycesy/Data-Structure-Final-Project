@@ -11,6 +11,11 @@ struct Node{
     struct Node *left, *right, *parent ;
 }; typedef struct Node Node;
 
+Node *newNode(unsigned long key, unsigned long data);
+void add(Node **redBlack, unsigned long key, unsigned long data);
+void checkColor(Node **node);
+void correctTree(Node **node);
+void traversal(Node *RedBlack);
 
 Node *newNode(unsigned long key, unsigned long data){
     Node *temp = (Node *) malloc(sizeof(Node));
@@ -53,10 +58,11 @@ void add(Node **redBlack, unsigned long key, unsigned long data){
 void checkColor(Node **node){
     if(!(*node)) return; //node is null
     if((*node)->parent == NULL) return; //root dont have violations
-    if( !(*node)->isBlack && !(*node)->parent->isBlack){ //two consecutive reds
+    if( !((*node)->isBlack) && !((*node)->parent->isBlack) ){ //two consecutive reds
+    	printf("2 vermelhos em sequencia. %ld e %ld\n", (*node)->key, (*node)->parent->key);
         correctTree(&(*node));
     }
-    checkColor(&(*node)->parent); //check if we dont cause a violation after fix a violation
+   	checkColor(&(*node)->parent); //check if we dont cause a violation after fix a violation
 }
 
 /*
@@ -80,11 +86,12 @@ int isAuntBlack(Node *node){
 */
 
 void correctTree(Node **node){
+	printf("Corrigindo arvore!\n");
     if((*node)->parent->parent->isLeftChild){
         //aunt is parent->parent->right
         if((*node)->parent->parent->right == NULL || (*node)->parent->parent->right->isBlack){
-            printf("_");
-            //rotateNode(&(*node));
+            printf("Rotacionando...");
+            rotateNode(&(*node));
         }
         if((*node)->parent->parent->right != NULL){ //ColorFlip
             (*node)->parent->parent->right->isBlack = 1; //The childs are blacks and parent are red
@@ -95,13 +102,16 @@ void correctTree(Node **node){
     }
     //aunt is parent->parent->left
     if((*node)->parent->parent->left == NULL || (*node)->parent->parent->left->isBlack){
-        printf("_");
-        //rotateNode(&(*node));
+        printf("Rotacionando...");
+        rotateNode(&(*node));
     }
     if((*node)->parent->parent->left != NULL){ //ColorFlip
         (*node)->parent->parent->left->isBlack = 1; //The childs are blacks and parent are red
     }
     (*node)->parent->parent->isBlack = 0; //parent red
+    if((*node)->parent->parent->parent == NULL)//because they are the root
+    	(*node)->parent->parent->isBlack = 1;
+    
     (*node)->parent->isBlack = 1;
     return;
 }
@@ -119,6 +129,7 @@ void correctTree(Node **node){
 
 
 //REBALANCE
+
 //Black (or null) aunt = rotate
 //red aunt = color flip
 
@@ -127,9 +138,56 @@ void correctTree(Node **node){
 
 //after colorFlip:
 //Red with two blaco children
+
+
+
+void rotateLeft(Node **redBlack){
+    Node *temp = NULL;
+    temp = (*redBlack)->right;
+    if(temp==NULL) return;
+    (*redBlack)->right = aux->left;
+    temp->left = (*redBlack);
+    (*redBlack) = temp;
+    (*redBlack)->isLeftChild = (*redBlack)->left->isLeftChild;
+    (*redBlack)->left->isLeftChild = 1;
+    (*redBlack)->parent = (*redBlack)->left->parent;
+    (*redBlack)->left->parent = (*redBlack);
+    (*redBlack)->isBlack = 1;
+    (*redBlack)->left->isBlack = 0;
+    (*redBlack)->right->isBlack = 0;
+}
+void rotateRight(Node **redBlack){
+    Node *redBlack = NULL;
+    temp = (*redBlack)->left;
+    if(aux==NULL) return;
+    (*redBlack)->left = temp->right;
+    temp->right = (*temp);
+    (*redBlack) = temp;
+    (*redBlack)->isLeftChild = (*redBlack)->right->isLeftChild;
+    (*redBlack)->right->isLeftChild = 0;
+    (*redBlack)->parent = (*redBlack)->right->parent;
+    (*redBlack)->right->parent = (*redBlack);
+    (*redBlack)->isBlack = 1;
+    (*redBlack)->left->isBlack = 0;
+    (*redBlack)->right->isBlack = 0;
+}
+void rotateRL(NoArvBinaria **arv){
+    rotateRight(&(*arv)->dir);
+    rotateLeft(&(*arv));
+}
+void rotateLR(NoArvBinaria **arv){
+    rotateLeft(&(*arv)->esq);
+    rotateRight(&(*arv));
+}
+
+
+
+
+
+
 void traversal(Node *RedBlack){
     if(!RedBlack) return;
-    printf("%d\n", RedBlack->key);
+    printf("%ld\n", RedBlack->key);
     traversal(RedBlack->left);
     traversal(RedBlack->right);
 }
@@ -141,8 +199,11 @@ void main(){
     int i;
     add(&RedBlack, 12, 10000);
     add(&RedBlack, 8, 10000);
-    //add(&RedBlack, 21, 10000);
+    add(&RedBlack, 21, 10000);
+    
+    //printf("Tentando adicionar o 6\n");
     add(&RedBlack, 6, 10000);
-    //printf("%d", RedBlack->right->key);
+    //printf("Por um milagre, conseguimos!\n");
+    //printf("Pai: %ld\n", RedBlack->right->parent->key);
     traversal(RedBlack);
 }
