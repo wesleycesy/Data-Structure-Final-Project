@@ -25,9 +25,59 @@ Node *createNewNode(){
 Node *split(Node **btree, int key, int not_key){
 	Node *left = createNewNode();
 	Node *right = createNewNode();
-	if
+	Node *parent = createNewNode();
+	int i;
 	
+    if(key < (*btree)->key[((T-1)/2)-1] ){  // key [1] lower then middle - 1
+        median = (*btree)->key[((T-1)/2)-1]; //So, the median is the middle - 1
+    	
+    	//this part is not adaptative from T length ------------------------------------------------------------WARNING
+    	
+    	if(key < (*btree)->key[0]){
+    		left->key[0] = key;
+    		left->not_key[0] = not_key;
+    		left->key[1] = (*btree)->key[0];
+    		left->not_key[1] = (*btree)->not_key[0];
+    		left->child[1] = (*btree)->child[0];
+    		left->child[2] = (*btree)->child[1];	
+    		
+    		right->key[0] = (*btree)->key[2];
+    		right->not_key[0] = (*btree)->not_key[2];
+    		right->key[1] = (*btree)->key[3];
+    		right->not_key[1] = (*btree)->not_key[3];
+    		right->child[0] = (*btree)->child[2];
+    		right->child[1] = (*btree)->child[3];
+    		right->child[2] = (*btree)->child[4];
+    		//L and R nodes are ready, we need setup the parent
+    		parent->key[0] = (*btree)->key[((T-1)/2)-1]; //Median
+    		parent->not_key[0] = (*btree)->not_key[((T-1)/2)-1];
+    		parent->child[0] = left;
+    		parent->child[1] = right;
+    		
+    	}else{-----------------------------------------------------------------------------------------------------TODO
+    		left->key[0] = (*btree)->key[0];
+    		left->not_key[0] = (*btree)->not_key[0];
+    		left->key[1] = key;
+    		left->not_key[1] = not_key;
+    	}
+    	
+    	
+    }else if(key > (*btree)->key[((T-1)/2)])] ){ //key[2]
+        median = (*btree)->key[((T-1)/2)];
+    	flag = 1;
+    }else{
+        median = key;
+    	flag = 2;
+    }
+   	
+
+	free(*btree);
+	*btree = parent;
 	
+}
+void splitByKey(Node **btree, Node **left, node **right, int key){
+	
+
 }
 
 
@@ -56,15 +106,9 @@ int btreeInsert(Node **btree, int key, int not_key){
         return 0;
     }
 //Otherwise the node is full, evenly split it into two nodes so:
-    //find the median element
+    //find the median element - Split
     Node *median = NULL;
 
-    if(key < (*btree)->key[((T-1)/2)-1] ) //lower then middle - 1
-        median = (*btree)->key[((T-1)/2)-1]; //So, the median is the middle - 1
-    else if(key > (*btree)->key[((T-1)/2)-1] && key < (*btree)->key[((T-1)/2)] )
-        median = key;
-    else
-        median = (*btree)->key[((T-1)/2)]//otherwise the median is the middle
 
     return 1;
 }
