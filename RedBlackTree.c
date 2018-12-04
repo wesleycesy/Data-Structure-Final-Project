@@ -34,39 +34,50 @@ Node *newNode(unsigned long key, unsigned long data){
 }
 
 void add(Node **redBlack, unsigned long key, unsigned long data){
-    Node *temp = newNode(key, data);
     if(!(*redBlack)){
+        Node *temp = newNode(key, data);
+        if(!temp) return;
         temp->isBlack = 1;
         *redBlack = temp;
-    }else if( (*redBlack)->key <  key){//go to right
-        add(&((*redBlack)->right), key, data);
-        (*redBlack)->right->parent = (*redBlack);
-        (*redBlack)->right->isBlack = 0; //All new node are red
-        temp = (*redBlack)->right;
+        return;
     }
-
     else if( (*redBlack)->key >  key){//go to left
-        add(&((*redBlack)->left), key, data);
-        (*redBlack)->left->parent = (*redBlack);
-        (*redBlack)->left->isBlack = 0; //All new node are red
-        (*redBlack)->left->isLeftChild = 1;//we are the left child
-        temp = (*redBlack)->left;
+        if((*redBlack)->left == NULL){
+        	(*redBlack)->left = newNode(key, data);
+        	if(!(*redBlack)->left) return;
+        	(*redBlack)->left->parent = (*redBlack);
+        	(*redBlack)->left->isLeftChild = 1;
+        	checkColor(&(*redBlack)->left);
+        	checkColor(&(*redBlack));
+        }else{
+        	add(&((*redBlack)->left), key, data);
+        	checkColor(&(*redBlack));	
+        }
     }
-
+    else if( (*redBlack)->key <  key){//go to right
+        if((*redBlack)->right == NULL){
+        	(*redBlack)->right = newNode(key, data);
+        	if(!(*redBlack)->right) return;
+        	(*redBlack)->right->parent = (*redBlack);
+        	checkColor(&(*redBlack)->right);
+        	checkColor(&(*redBlack));
+        }else{
+        	add(&((*redBlack)->right), key, data);
+        	checkColor(&(*redBlack));	
+        }
+    }
     else{
-        printf("ERROR! - Invalid key");
+        printf("ERROR! - Invalid key\n");
     }
-    //we need check if any rule has been breaked
-    checkColor(&temp);
 }
 
 void checkColor(Node **node){
 	//printf("Checando %ld\n", (*node)->key);
     if(!(*node)) return; //node is null
     if((*node)->parent == NULL) return; //root dont have violations
-    printf("\nEu: %ld - %d", (*node)->parent->key, (*node)->parent->isBlack);
+    printf("\nEu: %ld - %d", (*node)->key, (*node)->isBlack);
     if( !((*node)->isBlack) && !((*node)->parent->isBlack) ){ //two consecutive reds
-    	printf("2 vermelhos em sequencia. %ld e %ld\n", (*node)->key, (*node)->parent->key);
+    	printf("\n2 vermelhos em sequencia. %ld e %ld\n", (*node)->key, (*node)->parent->key);
         correctTree(&(*node));
         checkColor(&(*node)->parent); //check if we dont cause a violation after fix a violation
     }
@@ -92,6 +103,8 @@ int isAuntBlack(Node *node){
     return node->parent->parent->left->isBlack;
 }
 */
+
+
 
 void correctTree(Node **node){
 	printf("Corrigindo arvore!\n");
@@ -137,6 +150,7 @@ void correctTree(Node **node){
 
 
 
+
 //Root is always BLACK
 //If a node is red, then both its children are black.
 //Every path from a given node to any of its descendant NIL nodes contains the same number of black nodes.
@@ -163,35 +177,30 @@ void rotateNode(Node **redBlack){
 }
 
 
+
+
 void rotateLeft(Node **redBlack){
-    Node *temp = NULL;
-    temp = (*redBlack)->right;
-    if(temp==NULL) return;
+    if(!(*redBlack)) return;
+    Node *temp = (*redBlack)->right;
     (*redBlack)->right = temp->left;
     temp->left = (*redBlack);
     (*redBlack) = temp;
+    
     (*redBlack)->isLeftChild = (*redBlack)->left->isLeftChild;
     (*redBlack)->left->isLeftChild = 1;
     (*redBlack)->parent = (*redBlack)->left->parent;
     (*redBlack)->left->parent = (*redBlack);
-    (*redBlack)->isBlack = 1;
-    (*redBlack)->left->isBlack = 0;
-    (*redBlack)->right->isBlack = 0;
 }
 void rotateRight(Node **redBlack){
-    Node *temp = NULL;
-    temp = (*redBlack)->left;
-    if(temp==NULL) return;
+    Node *temp = (*redBlack)->left;
     (*redBlack)->left = temp->right;
     temp->right = (*redBlack);
     (*redBlack) = temp;
+    
     (*redBlack)->isLeftChild = (*redBlack)->right->isLeftChild;
     (*redBlack)->right->isLeftChild = 0;
     (*redBlack)->parent = (*redBlack)->right->parent;
     (*redBlack)->right->parent = (*redBlack);
-    (*redBlack)->isBlack = 1;
-    (*redBlack)->left->isBlack = 0;
-    (*redBlack)->right->isBlack = 0;
 }
 void rotateRL(Node **arv){
     rotateRight(&(*arv)->right);
@@ -232,16 +241,12 @@ void main(){
     add(&RedBlack, 21, 10000);
     
     
-    add(&RedBlack, 9, 100);
+    add(&RedBlack, 7, 100);
     //add(&RedBlack, 27, 10000);
     
-    
-    //traversal(RedBlack);
     printf("\n");
-    //traversalColor(RedBlack);
-    
-    printf("\nAvo: %ld - %d", RedBlack->key, RedBlack->isBlack);
-    printf("\nPai: %ld - %d", RedBlack->left->key,RedBlack->left->isBlack);
-	printf("\nEu: %ld  - %d", RedBlack->left->right->key,RedBlack->left->right->isBlack);
-	printf("\nTio: %ld - %d\n", RedBlack->right->key,RedBlack->right->isBlack);
+    traversal(RedBlack);
+    printf("\n");
+    traversalColor(RedBlack);
+    printf("\n");
 }
