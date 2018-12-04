@@ -172,8 +172,43 @@ void correctTree(Node **node){
 //Red with two blaco children
 
 void rotateNode(Node **redBlack){
+	if(!(*node)) return;
+	if((*node)->isLeftChild == (*node)->parent->isLeftChild){
+		if((*node)->isLeftChild == 1){
+			//--------------------------------------------------------------TODO - COLORS
+			(*node)->parent->isBlack = 1;
+			(*node)->parent->parent->isBlack = 0; 
+			rotateRight(&(*node)->parent->parent);
+			return;
+		}
+		if((*node)->isLeftChild == 1){
+			//--------------------------------------------------------------TODO - COLORS 
+			(*node)->parent->isBlack = 1;
+			(*node)->parent->parent->isBlack = 0;
+			rotateLeft(&(*node)->parent->parent);
+			return;
+		}
+	}
+	//2 rotations
 	
-
+	if((*node)->isLeftChild == 0){
+		rotateLeft(&(*node)->parent);
+		rotateRight(&(*node)->parent);
+	
+		(*node)->isBlack = 1;
+		(*node)->left->isBlack = 0;
+		(*node)->right->isBlack = 0;
+		//--------------------------------------------------------------TODO - COLORS 
+		return;
+	}
+	rotateRight(&(*node)->parent);
+	rotateLeft(&(*node)->parent);
+	
+	(*node)->isBlack = 1;
+	(*node)->left->isBlack = 0;
+	(*node)->right->isBlack = 0;
+	//--------------------------------------------------------------TODO - COLORS 
+	
 }
 
 
@@ -202,14 +237,7 @@ void rotateRight(Node **redBlack){
     (*redBlack)->parent = (*redBlack)->right->parent;
     (*redBlack)->right->parent = (*redBlack);
 }
-void rotateRL(Node **arv){
-    rotateRight(&(*arv)->right);
-    rotateLeft(&(*arv));
-}
-void rotateLR(Node **arv){
-    rotateLeft(&(*arv)->left);
-    rotateRight(&(*arv));
-}
+
 
 
 
