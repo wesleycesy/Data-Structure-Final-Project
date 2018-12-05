@@ -107,53 +107,63 @@ int isAuntBlack(Node *node){
 void correctTree(Node **node){
 	printf("Corrigindo arvore!\n");
     if((*node)->parent->isLeftChild == 0){//aunt is parent->parent->left
-    printf("Caso %ld \n", (*node)->key);
-    printf("Tio: %p \n", (*node)->parent->parent->left);
-        if((*node)->parent->parent->left == NULL){
-        	//aunt NULL - ROTATE
-            printf("Rotacionando...");
-            rotateNode(&(*node));
-            return;
-        }
-        printf("n Nulo");
-        if((*node)->parent->parent->left->isBlack){
-        	//aunt black - ROTATE
-            printf("Rotacionando...");
-            rotateNode(&(*node));
-            return;
-        }
-        if((*node)->parent->parent->left != NULL){ //ColorFlip
-         	//Aunt red - COLOR FLIP
-         	printf("Tio n nulo\n");
-            (*node)->parent->parent->left->isBlack = 1; //parent and aunt turn black 
-            return;
-        }
-        (*node)->parent->isBlack = 1;
-        if((*node)->parent->parent->parent != NULL) //grandfather is not the root
-        	(*node)->parent->parent->isBlack = 0;// - grandfather turn red.
-        return;
-    }
+    	printf("Caso %ld \n", (*node)->key);
+    	//printf("Tio: %p \n", (*node)->parent->parent->left);
+        if((*node)->parent->parent->left != NULL){
+				if((*node)->parent->parent->left->isBlack){
+				{
+		        	//aunt NULL - ROTATE
+		            printf("Rotacionando...");
+		           // rotateNode(node);
+		            return;
+		        }
+			}
+		        if((*node)->parent->parent->left != NULL){ //ColorFlip
+		         	//Aunt red - COLOR FLIP
+		            (*node)->parent->parent->left->isBlack = 1; //parent and aunt turn black 
+		            return;
+		        }
+		        (*node)->parent->isBlack = 1;
+		        if((*node)->parent->parent->parent != NULL) //grandfather is not the root
+		        	(*node)->parent->parent->isBlack = 0;// - grandfather turn red.
+		        return;
+		}
+		else
+		{
+				//aunt NULL - ROTATE
+    	        printf("Rotacionando...");
+    	       // rotateNode(node);
+    	        return;
+		}
+	}
     if((*node)->parent->isLeftChild == 1){          //aunt is parent->parent->right
         printf("Case 2\n");
-        if((*node)->parent->parent->right == NULL || (*node)->parent->parent->right->isBlack){
-        	//aunt black - ROTATE
-            printf("Rotacionando...");
-            rotateNode(&(*node));
-            return;
-        }
-        if((*node)->parent->parent->right != NULL){ //ColorFlip
-         	//Aunt red - COLOR FLIP
-            (*node)->parent->parent->right->isBlack = 1; //parent and aunt turn black 
-        }
-        (*node)->parent->isBlack = 1;
-        if((*node)->parent->parent->parent != NULL) //grandfather is not the root
-        	(*node)->parent->parent->isBlack = 0;// - grandfather turn red.
-        return;
+        if((*node)->parent->parent->right != NULL){
+				if((*node)->parent->parent->right->isBlack == 1){
+     		   	//aunt black - ROTATE
+     	       printf("Rotacionando...");
+     	       //rotateNode(&(*node));
+     	       return;
+     	   }
+     	   if((*node)->parent->parent->right != NULL){ //ColorFlip
+	 	           //Aunt red - COLOR FLIP
+	 	           (*node)->parent->parent->right->isBlack = 1; //parent and aunt turn black 
+	 	   }
+	 	       (*node)->parent->isBlack = 1;
+	 	       if((*node)->parent->parent->parent != NULL) //grandfather is not the root
+	 	       		(*node)->parent->parent->isBlack = 0;// - grandfather turn red.
+	 	       		return;
+	    }
 	}
+	else
+	{
+	       	//aunt black - ROTATE
+	        printf("Rotacionando...");
+	       // rotateNode(&(*node));
+	        return;
+	}
+
 }
-
-
-
 
 
 //Root is always BLACK
@@ -179,18 +189,19 @@ void correctTree(Node **node){
 void rotateNode(Node **node){
 	if(!(*node)) return;
 	if((*node)->isLeftChild == (*node)->parent->isLeftChild){
+		printf("caso 1\n\n");	
 		if((*node)->isLeftChild == 1){
 			//--------------------------------------------------------------TODO - COLORS
 			(*node)->parent->isBlack = 1;
 			(*node)->parent->parent->isBlack = 0; 
-			rotateRight(&(*node)->parent->parent);
+			rotateRight(&((*node)->parent->parent));
 			return;
 		}
-		if((*node)->isLeftChild == 1){
+		if((*node)->isLeftChild == 0){
 			//--------------------------------------------------------------TODO - COLORS 
 			(*node)->parent->isBlack = 1;
 			(*node)->parent->parent->isBlack = 0;
-			rotateLeft(&(*node)->parent->parent);
+			rotateLeft(&((*node)->parent->parent));
 			return;
 		}
 	}
@@ -220,27 +231,32 @@ void rotateNode(Node **node){
 
 
 void rotateLeft(Node **redBlack){
-    if(!(*redBlack)) return;
-    Node *temp = (*redBlack)->right;
+   
+	if(!(*redBlack)) return;
+
+	(*redBlack)->right->isLeftChild = (*redBlack)->isLeftChild;
+	(*redBlack)->right->parent = (*redBlack)->parent;
+	(*redBlack)->parent = (*redBlack)->right;
+
+	Node *temp = (*redBlack)->right;
     (*redBlack)->right = temp->left;
     temp->left = (*redBlack);
     (*redBlack) = temp;
-    
-    (*redBlack)->isLeftChild = (*redBlack)->left->isLeftChild;
-    (*redBlack)->left->isLeftChild = 1;
-    (*redBlack)->parent = (*redBlack)->left->parent;
-    (*redBlack)->left->parent = (*redBlack);
+
 }
 void rotateRight(Node **redBlack){
-    Node *temp = (*redBlack)->left;
-    (*redBlack)->left = temp->right;
-    temp->right = (*redBlack);
-    (*redBlack) = temp;
-    
+	
+	if(!(*redBlack)) return;
+	
     (*redBlack)->isLeftChild = (*redBlack)->right->isLeftChild;
     (*redBlack)->right->isLeftChild = 0;
     (*redBlack)->parent = (*redBlack)->right->parent;
-    (*redBlack)->right->parent = (*redBlack);
+    (*redBlack)->right->parent = (*redBlack);    
+
+	Node *temp = (*redBlack)->left;
+    (*redBlack)->left = temp->right;
+    temp->right = (*redBlack);
+    (*redBlack) = temp;
 }
 
 
@@ -252,6 +268,7 @@ void rotateRight(Node **redBlack){
 void traversal(Node *RedBlack){
     if(!RedBlack) return;
     printf("%ld ->", RedBlack->key);
+	printf("%p,%p", RedBlack->left,RedBlack->right);
     traversal(RedBlack->left);
     traversal(RedBlack->right);
 }
