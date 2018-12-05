@@ -75,13 +75,11 @@ void checkColor(Node **node){
 	//printf("Checando %ld\n", (*node)->key);
     if(!(*node)) return; //node is null
     if((*node)->parent == NULL) return; //root dont have violations
-    printf("\nEu: %ld - %d", (*node)->key, (*node)->isBlack);
     if( !((*node)->isBlack) && !((*node)->parent->isBlack) ){ //two consecutive reds
     	printf("\n2 vermelhos em sequencia. %ld e %ld\n", (*node)->key, (*node)->parent->key);
         correctTree(&(*node));
         checkColor(&(*node)->parent); //check if we dont cause a violation after fix a violation
     }
-   	printf("\nEu: %ld - %d", (*node)->parent->key, (*node)->parent->isBlack);
 }
 
 /*
@@ -108,8 +106,35 @@ int isAuntBlack(Node *node){
 
 void correctTree(Node **node){
 	printf("Corrigindo arvore!\n");
-    if((*node)->parent->isLeftChild){//aunt is parent->parent->right
-    printf("Caso 1-Tio eh esquerda\n");
+    if((*node)->parent->isLeftChild == 0){//aunt is parent->parent->left
+    printf("Caso %ld \n", (*node)->key);
+    printf("Tio: %p \n", (*node)->parent->parent->left);
+        if((*node)->parent->parent->left == NULL){
+        	//aunt NULL - ROTATE
+            printf("Rotacionando...");
+            rotateNode(&(*node));
+            return;
+        }
+        printf("n Nulo");
+        if((*node)->parent->parent->left->isBlack){
+        	//aunt black - ROTATE
+            printf("Rotacionando...");
+            rotateNode(&(*node));
+            return;
+        }
+        if((*node)->parent->parent->left != NULL){ //ColorFlip
+         	//Aunt red - COLOR FLIP
+         	printf("Tio n nulo\n");
+            (*node)->parent->parent->left->isBlack = 1; //parent and aunt turn black 
+            return;
+        }
+        (*node)->parent->isBlack = 1;
+        if((*node)->parent->parent->parent != NULL) //grandfather is not the root
+        	(*node)->parent->parent->isBlack = 0;// - grandfather turn red.
+        return;
+    }
+    if((*node)->parent->isLeftChild == 1){          //aunt is parent->parent->right
+        printf("Case 2\n");
         if((*node)->parent->parent->right == NULL || (*node)->parent->parent->right->isBlack){
         	//aunt black - ROTATE
             printf("Rotacionando...");
@@ -118,33 +143,13 @@ void correctTree(Node **node){
         }
         if((*node)->parent->parent->right != NULL){ //ColorFlip
          	//Aunt red - COLOR FLIP
-         	printf("Tio n nulo\n");
             (*node)->parent->parent->right->isBlack = 1; //parent and aunt turn black 
         }
-        printf("Pai vira preto\n");
-        (*node)->parent->isBlack = 1;
-        printf("Eu sou o pai - ");
-        (*node)->parent->isBlack ? printf("BLK\n") : printf("RED\n");
-        if((*node)->parent->parent->parent != NULL) //grandfather is not the root
-        	(*node)->parent->parent->isBlack = 0;// - grandfather turn red.
-        return;
-    }
-    //if((*node)->parent->isLeftChild){          //aunt is parent->parent->left
-    printf("Caso 2-Tio eh direita\n");
-        if((*node)->parent->parent->left == NULL || (*node)->parent->parent->left->isBlack){
-        	//aunt black - ROTATE
-            printf("Rotacionando...");
-            rotateNode(&(*node));
-            return;
-        }
-        if((*node)->parent->parent->left != NULL){ //ColorFlip
-         	//Aunt red - COLOR FLIP
-            (*node)->parent->parent->left->isBlack = 1; //parent and aunt turn black 
-        }
         (*node)->parent->isBlack = 1;
         if((*node)->parent->parent->parent != NULL) //grandfather is not the root
         	(*node)->parent->parent->isBlack = 0;// - grandfather turn red.
         return;
+	}
 }
 
 
@@ -171,7 +176,7 @@ void correctTree(Node **node){
 //after colorFlip:
 //Red with two blaco children
 
-void rotateNode(Node **redBlack){
+void rotateNode(Node **node){
 	if(!(*node)) return;
 	if((*node)->isLeftChild == (*node)->parent->isLeftChild){
 		if((*node)->isLeftChild == 1){
@@ -265,11 +270,11 @@ void main(){
     srand(time(NULL));
     Node *RedBlack = NULL;
     add(&RedBlack, 12, 10000);
-    add(&RedBlack, 8, 10000);
-    add(&RedBlack, 21, 10000);
+    add(&RedBlack, 15, 10000);
+    add(&RedBlack, 20, 10000);
     
     
-    add(&RedBlack, 7, 100);
+    //add(&RedBlack, 7, 100);
     //add(&RedBlack, 27, 10000);
     
     printf("\n");
